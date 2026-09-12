@@ -4,7 +4,22 @@ Reconstruct an editable 3D space from photos, using an explicit scene descriptio
 
 The core experiment is whether a vision model can translate photographs into useful spatial data: objects, dimensions, relationships, materials, and uncertainty. A deterministic Blender Python builder should be able to reconstruct the space from that data without interpreting the photographs itself.
 
-**Status:** configuration and planning only. No scene schema, Blender builder, model API integration, evaluator, or browser viewer has been implemented.
+**Status:** configuration, planning, and a minimal uv Python scaffold. No scene schema, Blender builder, model API integration, evaluator, or browser viewer has been implemented.
+
+## Python setup
+
+Use the existing uv project for all Python packages. `.python-version` selects Python 3.12; `pyproject.toml` declares project metadata and dependencies. Add packages when their implementation milestone needs them.
+
+```bash
+uv sync
+uv run main.py
+```
+
+`main.py` is currently the generated greeting, so this is only an environment smoke check. Use `uv add <package>` for runtime dependencies and `uv add --dev <package>` for development tools. Keep the generated `uv.lock` in version control; `.venv/` is already ignored. No third-party dependencies have been added yet.
+
+The uv environment will run scene validation, orchestration, and tests. Blender runs geometry scripts using its own bundled Python and `bpy`. Packages installed by uv are not automatically available inside Blender; the planned process boundary is validated scene JSON. Blender 5.0.1 was found at `/Applications/Blender.app/Contents/MacOS/Blender` on the initial development Mac.
+
+Setup check on 2026-09-12: uv created `.venv` with Python 3.12.8, and `.venv/bin/python main.py` passed. Full sync and lockfile generation remain incomplete: installed uv 0.9.1 hit cache access restrictions, then a macOS SystemConfiguration panic with `--no-cache`, including on an approved retry. This matches a reported [uv sandbox issue](https://github.com/astral-sh/uv/issues/17484). Retry `uv sync` in a regular terminal; if the panic persists, update uv before retrying. No global tool upgrade or permission change was made for this setup.
 
 ## Intended workflow
 
@@ -65,6 +80,8 @@ Check a task only when its deliverable exists and its relevant checks pass. This
 - [x] Agree on explicit scene data, deterministic construction, and iterative evaluation.
 - [x] Add project Codex configuration and specialized agent instructions.
 - [x] Record the milestones and acceptance approach in this README.
+- [x] Initialize a uv project with Python 3.12 and establish dependency-management conventions.
+- [ ] Complete `uv sync`, generate `uv.lock`, and verify `uv run main.py`.
 
 ### 1. Choose one reference room
 

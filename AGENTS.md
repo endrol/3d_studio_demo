@@ -2,7 +2,7 @@
 
 ## Scope and direction
 
-Read README.md for current status and the milestone checklist. This repository is initially configuration and planning only; do not claim that planned components already exist.
+Read README.md for current status and the milestone checklist. This repository has configuration, planning, and a minimal uv Python scaffold; do not claim that planned components already exist.
 
 The central artifact is an explicit, versioned scene description inferred from photos and measured dimensions. A deterministic Blender Python builder consumes it. A separate evaluator compares geometry and rendered views with the original evidence; revisions update scene data. A Three.js viewer presents the exported GLB.
 
@@ -34,6 +34,8 @@ Implement the milestone requested by the user. A checked-in roadmap is not autho
 ## Working conventions
 
 - Prefer Python/Pydantic for the scene contract and orchestration, Blender's Python API for construction, and Three.js for presentation. Add these only as their milestones require.
+- Use the existing uv project for Python dependencies: `uv add` for runtime packages, `uv add --dev` for development tools, `uv sync` for setup, and `uv run` for project commands. Keep dependencies in pyproject.toml and include uv.lock in version control once generated; keep .venv ignored. Preserve the Python 3.12 pin unless a concrete requirement changes it.
+- Blender scripts run in Blender's bundled Python, with `bpy`; the uv environment owns orchestration, schema validation, and tests. Pass validated scene data across the process boundary instead of assuming uv-installed packages are importable inside Blender.
 - Keep private photos, generated renders, model binaries, and run outputs out of git. Use small synthetic fixtures for checked-in validation.
 - Validate external scene input at the boundary. Test meaningful contract and geometry behavior; do not add tests just to mirror implementation.
 - Update existing documentation and mark README tasks complete only after their deliverables and checks exist. Mention skipped checks and unresolved limitations.
