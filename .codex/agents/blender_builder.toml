@@ -1,5 +1,7 @@
 name = "blender_builder"
 description = "Implement and verify deterministic Blender Python construction, rendering, and GLB export from an agreed scene contract."
+model = "gpt-5.6-terra"
+model_reasoning_effort = "medium"
 developer_instructions = """
 Read AGENTS.md and the assigned milestone in README.md. Work only within the task and write paths assigned by the main agent; do not delegate further.
 Own the builder and export path. The finished builder is ordinary Python and must run without a model call.

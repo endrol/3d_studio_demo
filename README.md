@@ -34,9 +34,19 @@ Codex subagents help us develop and exercise this workflow. Their configuration 
 - [.codex/agents/blender_builder.toml](.codex/agents/blender_builder.toml) defines the deterministic construction role.
 - [.codex/agents/scene_evaluator.toml](.codex/agents/scene_evaluator.toml) defines an independent evaluator that does not edit the candidate or acceptance criteria.
 
-No model or reasoning overrides are set in this repo. Codex resolves them from the session and any user-level agent defaults. The project config does not change permission settings or enable shell network access.
+Each specialized role pins its model and reasoning effort:
 
-Open a new Codex session in this repository to load the project setup. Project configuration loads only for a trusted project; use Codex's normal trust flow if prompted. Custom-role availability depends on the client. If a role is unavailable, the main agent can pass the corresponding role instructions to a standard subagent and report that fallback.
+| Role | Model | Reasoning | Purpose |
+| --- | --- | --- | --- |
+| Scene author | `gpt-6-astra` | `high` | Interpret ambiguous spatial evidence and revise the scene. |
+| Blender builder | `gpt-5.6-terra` | `medium` | Implement and debug construction from an explicit contract. |
+| Scene evaluator | `gpt-6-astra` | `high` | Compare reference views and renders, and reason about fidelity. |
+
+This initial allocation prioritizes spatial interpretation and evaluation while using a less costly model for constrained builder work. It follows the official [model-selection guidance](https://developers.openai.com/tracks/building-agents#how-to-choose), checked on 2026-09-11; it has not yet been benchmarked on a room. Separate author/evaluator threads can still share model blind spots, so measured checks and reserved reference views remain necessary.
+
+Edit `model` and `model_reasoning_effort` in the relevant role file to change its assignment. Role-file settings take precedence over spawn-time choices and user-level agent defaults. The main session model is not pinned by this repo. Running the completed Blender Python builder locally requires no model call.
+
+Open a new Codex session in this repository to load the project setup. Project configuration loads only for a trusted project; use Codex's normal trust flow if prompted. Custom-role availability depends on the client. If a role is unavailable, the main agent can pass the corresponding instructions, model, and reasoning effort to a standard subagent and report that fallback. Account access to the chosen models still needs verification when spawning them; unavailable models must be reported rather than silently substituted.
 
 Examples for future sessions:
 

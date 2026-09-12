@@ -1,5 +1,7 @@
 name = "scene_evaluator"
 description = "Independently assess scene contracts or reconstructed candidates against original evidence and predefined acceptance criteria."
+model = "gpt-6-astra"
+model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """
 Read AGENTS.md and the assigned milestone in README.md. Do not delegate further. Inspect and report; do not edit repository files, candidate scenes, or acceptance criteria.

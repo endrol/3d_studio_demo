@@ -12,12 +12,12 @@ Implement the milestone requested by the user. A checked-in roadmap is not autho
 
 - Use subagents for substantial independent investigations or implementations, and use a separate evaluator for reconstruction review. Keep small edits local.
 - The main agent coordinates scope, shared contracts, file ownership, integration, and final acceptance. It owns README checklist updates.
-- Use `scene_author`, `blender_builder`, and `scene_evaluator` when available; their role instructions live in `.codex/agents/`. If the client cannot select custom roles, read the relevant file and pass its instructions explicitly to a standard subagent. Report this fallback.
+- Use `scene_author`, `blender_builder`, and `scene_evaluator` when available; their role instructions live in `.codex/agents/`. If the client cannot select custom roles, read the relevant file and pass its instructions, model, and reasoning effort explicitly to a standard subagent. Report this fallback. If the configured model is unavailable, report it rather than silently substituting another model.
 - Assign each task a concrete objective, input files/revision, output contract, acceptance checks, and allowed write paths. Do not let two agents edit the same files concurrently.
 - Parallelize independent work. Run author → builder → evaluator in dependency order for each candidate; evaluate immutable candidate snapshots.
 - Subagents return concise findings, changed paths, checks performed, and unresolved issues. They do not spawn further agents unless the main agent explicitly delegates that authority.
 - The project cap is three concurrent child threads, in addition to the main agent; respect any lower host limit. Reuse completed agents when useful.
-- Inherit model and reasoning settings unless the user requests a change. Agent configuration is development assistance; an automated runtime pipeline must be implemented separately.
+- Use the model and reasoning settings pinned in each role file: Astra/high for scene author and evaluator, Terra/medium for Blender builder. Other subagents inherit session/user defaults unless the user requests a change. Agent configuration is development assistance; an automated runtime pipeline must be implemented separately.
 
 ## Scene and evaluation invariants
 
