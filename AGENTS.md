@@ -2,7 +2,7 @@
 
 ## Scope and direction
 
-Read README.md for current status and the milestone checklist. This repository has configuration, planning, and a minimal uv Python scaffold; do not claim that planned components already exist.
+Read README.md for current status and the milestone checklist. The tracked repository has configuration, planning, and a minimal uv Python scaffold. A local benchmark and scripts may exist in the ignored `output/` folder; native Blender generation and independent final evaluation were blocked. Do not claim that planned components or unrun checks already exist.
 
 The central artifact is an explicit, versioned scene description inferred from photos and measured dimensions. A deterministic Blender Python builder consumes it. A separate evaluator compares geometry and rendered views with the original evidence; revisions update scene data. A Three.js viewer presents the exported GLB.
 

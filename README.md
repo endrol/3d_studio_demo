@@ -4,7 +4,21 @@ Reconstruct an editable 3D space from photos, using an explicit scene descriptio
 
 The core experiment is whether a vision model can translate photographs into useful spatial data: objects, dimensions, relationships, materials, and uncertainty. A deterministic Blender Python builder should be able to reconstruct the space from that data without interpreting the photographs itself.
 
-**Status:** configuration, planning, and a minimal uv Python scaffold. No scene schema, Blender builder, model API integration, evaluator, or browser viewer has been implemented.
+**Status:** configuration and a minimal uv Python scaffold, plus a local four-photo benchmark in the git-ignored `output/` folder. The benchmark has versioned scene JSON, a stdlib validator, a Blender builder script, and a fallback GLB exporter. Native Blender execution is blocked by a startup crash. No model API integration, automated evaluator, or browser viewer has been implemented.
+
+## Local four-photo benchmark
+
+`output/scene.json` describes 393 editable primitives inferred from four overlapping living/kitchen photos in `sample_data/input/normal/`: `16349619_居室.jpg`, `16349620_居室-16263970.jpg`, `16349621_居室-16263976.jpg`, and `16349591_キッチン-16263997.jpg`. All dimensions are estimates; no measurements or held-out view were supplied. References and hashes are recorded in `output/reference_manifest.json`.
+
+`output/benchmark.glb` is a Blender-importable asset with semantic object/group IDs and 11 embedded wood textures. `output/cutaway.svg` is a geometry diagram, not a rendered fidelity check. The fallback exporter passed structural checks, primitive bounds/transform checks, malformed-input rejection, and an identical repeated export. It omits optional bevel modifiers. Reports and the retained initial candidate are under `output/validation.json`, `output/evaluation.json`, and `output/revisions/r00/`.
+
+Native `.blend` generation and photo-matched previews are incomplete: Blender 5.0.1 crashes during Metal initialization before executing Python, including an approved retry. Specialized agents also reached their usage limit before final independent evaluation. The result is `needs_evidence`, with a separate native-tool failure; it is not an accepted reconstruction. The retained builder can be run in a working Blender environment:
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender --background --python-exit-code 1 --python output/build_scene.py -- output/scene.json output/native
+```
+
+The existing `.venv/bin/python` was used for this dependency-free fallback because `uv sync` still hits the previously recorded macOS crash. All benchmark artifacts and scripts are local and ignored by git; this does not establish the reusable schema/builder milestones below.
 
 ## Python setup
 
@@ -85,10 +99,10 @@ Check a task only when its deliverable exists and its relevant checks pass. This
 
 ### 1. Choose one reference room
 
-- [ ] Select one room and collect several overlapping photos or walkthrough frames.
-- [ ] Record available measurements and assign stable IDs to reference images.
-- [ ] Identify unseen areas and reserve an independent reference view for the final check when coverage allows.
-- [ ] Choose local storage for private references and generated artifacts; keep them out of git.
+- [x] Select one room and collect several overlapping photos or walkthrough frames.
+- [x] Record available measurements and assign stable IDs to reference images.
+- [x] Identify unseen areas and reserve an independent reference view for the final check when coverage allows. (Unknowns recorded; no held-out view within the selected four.)
+- [x] Choose local storage for private references and generated artifacts; keep them out of git.
 
 Done when the input set, known dimensions, and missing evidence are explicit.
 
@@ -136,13 +150,14 @@ Done when a run can finish as `accepted`, `needs_evidence`, or `budget_exhausted
 
 ### 6. Explore in the browser
 
-- [ ] Build a minimal Three.js viewer that loads the exported GLB.
-- [ ] Add orbit, zoom, and useful camera presets.
-- [ ] Preserve object/group identity for cutaway and visibility controls.
+- [ ] Build a minimal local Three.js frontend that loads `output/benchmark.glb`, with no backend or model API calls required.
+- [ ] Add drag-to-rotate, scroll-to-zoom, and kitchen, living-room, and overhead camera buttons.
+- [ ] Preserve object/group identity and add wall/ceiling visibility controls for cutaway views.
+- [ ] Show an object's name and estimated dimensions when clicked, using scene data and its measurement/inference labels.
 - [ ] Verify the exported scene and basic interaction in a browser.
 - [ ] Add walking controls only after the core viewing experience works.
 
-Done when a saved reconstruction is navigable without a live model call.
+Done when a saved reconstruction is navigable in a local webpage without Blender knowledge or a live model call.
 
 ### 7. Test generalization
 
